@@ -3,46 +3,15 @@ import sys
 import utm
 import json
 import numpy
+from telemetry import Telemetry
 
-def amin(x):
-  res = None
-  for i in x:
-    if res is None or i < res:
-      res = i
-  return res
-
-def amax(x):
-  res = None
-  for i in x:
-    if res is None or i > res:
-      res = i
-  return res
-
-def normalize(aer):
-  mn, mx = amin(aer), amax(aer)
-  for i in range(len(aer)):
-    aer[i] = (aer[i] - mn) / (mx - mn)
-    aer[i] = int(aer[i] * 768)
-  return aer
-
-def process(pts):
-  xc = []
-  yc = []
-  for pt in pts:
-    (x, y, p, q) = utm.from_latlon(pt['latitude'], pt['longitude'])
-    xc.append(x)
-    yc.append(y)
-
-  return (normalize(xc), normalize(yc))
-
-with open('data.json') as f:
-  data = json.load(f)
-
-boundary = process(data['flyZones'][0]['boundaryPoints'])
-print(boundary)
-
+tm = Telemetry()
+boundary = tm.get_borderPoints(768)
+obstacles = tm.get_obstacles(768)
+waypoints = tm.get_waypoints(768)
 
 pygame.init()
+pygame.display.set_caption('simulation')
 screen = pygame.display.set_mode((768, 768))
 print(pygame.display.list_modes())
 print(pygame.display.Info())
@@ -50,11 +19,24 @@ print(pygame.display.Info())
 background = pygame.image.load('bg.jpg').convert()
 
 while True:
-  for event in pygame.event.get():
-    if event.type == pygame.QUIT:
-      pygame.quit()
-      sys.exit()
-  screen.blit(background, (0, 0))
-  for i in range(len(boundary[0])):
-    pygame.draw.aaline(screen, (255, 0, 0), (boundary[0][i], boundary[1][i]), (boundary[0][i-1], boundary[1][i-1]))
-  pygame.display.update()
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+    screen.blit(background, (0, 0))
+    for i in range(len(boundary)):
+        pygame.draw.line(screen, (255, 0, 0), (boundary[i][0], boundary[i][1]),
+                         (boundary[i - 1][0], boundary[i - 1][1]),
+                         width=2)
+    for i in obstacles:
+        pygame.draw.circle(screen, (255, 255, 0), (i[0], i[1]), i[2])
+    font = pygame.font.SysFont(None, 24)
+    for i in range(len(waypoints)):
+        # pygame.draw.circle(screen, (0, 0, 255), (i[0], i[1]), 3 )
+        font = pygame.font.SysFont(None, 24)
+        img = font.render(str(i + 1), True, (0, 0, 255))
+        rect = img.get_rect()
+        pygame.draw.rect(img, (0, 0, 255), rect, 1)
+        screen.blit(img, (waypoints[i][0], waypoints[i][1]))
+
+    pygame.display.update()
