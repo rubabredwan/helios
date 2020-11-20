@@ -1,7 +1,9 @@
 import pygame as pygame
 import sys
 import math
+import telemetry
 from trajectory_algorithm import trajectory_algorithm
+from generate_plan import generate_plan
 
 
 # distance between two 2D points
@@ -10,8 +12,7 @@ def dis(t1, t2):
 
 
 class TrajectoryGUI:
-    def __init__(self, size, w_l, o_l, b_l, path):
-
+    def __init__(self, size, w_l, o_l, b_l, c_l, path):
         self.input_type = 0
         self.charging = 0
         self.charging_t = (0, 0)
@@ -21,6 +22,7 @@ class TrajectoryGUI:
         self.w_l = w_l
         self.o_l = o_l
         self.b_l = b_l
+        self.center = c_l
         self.scaled_path = path
         self.scaling = float('+inf')
         if len(w_l) + len(o_l) + len(b_l) + len(path) > 0:
@@ -30,6 +32,7 @@ class TrajectoryGUI:
 
         pygame.init()
         pygame.display.set_caption('simulation')
+        generate_plan(self.b_l, self.scaled_path, self.center)
         self.screen = pygame.display.set_mode((self.window_size, self.window_size))
 
         self.background = pygame.image.load('bg.jpg').convert()
@@ -118,9 +121,7 @@ class TrajectoryGUI:
 
     def compute_path(self):
         self.scaled_path = trajectory_algorithm(self.w_l, self.o_l, self.b_l)
-        print("NEW TRAJECTORY")
-        for i in self.scaled_path:
-          print(i[0]/3.281, i[1]/3.281)
+        generate_plan(self.b_l, self.scaled_path, self.center)
 
     def draw_resized_circle(self, c, x, y, r):
         pygame.draw.circle(self.screen, c, (x / self.window_size, y / self.window_size),
