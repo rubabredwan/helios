@@ -3,33 +3,34 @@ import json
 
 
 def to_mer_list(pts, cen):
-    points = []
-    for pt in pts:
-        points.append((to_mer(pt)[0] - to_mer(cen)[0], to_mer(pt)[1] - to_mer(cen)[1]))
-    return points
+  points = []
+  for pt in pts:
+    points.append(
+        (to_mer(pt)[0] - to_mer(cen)[0], to_mer(pt)[1] - to_mer(cen)[1]))
+  return points
+
 
 def to_mer(pt):
-    (x, y, p, q) = utm.from_latlon(pt['latitude'], pt['longitude'])
-    return x * 3.281, y * 3.281
+  (x, y, p, q) = utm.from_latlon(pt['latitude'], pt['longitude'])
+  return x * 3.281, y * 3.281
+
 
 def get_val(pts, key):
-    values = []
-    for pt in pts:
-        values.append(pt[key])
-    return values
+  values = []
+  for pt in pts:
+    values.append(pt[key])
+  return values
+
 
 class Telemetry:
-    def __init__(self, file='data.json'):
-        with open(file) as f:
-            data = json.load(f)
-        self.center = data['mapCenterPos']
-        self.bPoints = to_mer_list(data['flyZones'][0]['boundaryPoints'], self.center)
-        self.wPoints = to_mer_list(data['waypoints'], self.center)
-        self.oPoints = to_mer_list(data['stationaryObstacles'], self.center)
-        self.oRadius = get_val(data['stationaryObstacles'], 'radius')
-        for i in range(len(self.oPoints)):
-            self.oPoints[i] = (self.oPoints[i], self.oRadius[i])
-        print(self.get_center())
-
-    def get_center(self):
-        return all(self.center)
+  def __init__(self, file='data.json'):
+    with open(file) as f:
+      data = json.load(f)
+    self.center = data['mapCenterPos']
+    self.bPoints = to_mer_list(data['flyZones'][0]['boundaryPoints'],
+                               self.center)
+    self.wPoints = to_mer_list(data['waypoints'], self.center)
+    self.oPoints = to_mer_list(data['stationaryObstacles'], self.center)
+    self.oRadius = get_val(data['stationaryObstacles'], 'radius')
+    for i in range(len(self.oPoints)):
+      self.oPoints[i] = (self.oPoints[i], self.oRadius[i])
