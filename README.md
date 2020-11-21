@@ -4,7 +4,7 @@
 
 
 ### Usage
- - Setup a Python 3 virtualenv from [instructions.](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/)
+ - Setup a Python 3 virtualenv from [instructions.](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/) and activate it.
  - Install the requirements with pip.
   `pip install -r requirements.txt`
  - Run the code. Pass `--blank=True` as an argument if starting from scratch.
