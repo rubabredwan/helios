@@ -32,7 +32,7 @@ class TrajectoryGUI:
 
         pygame.init()
         pygame.display.set_caption('simulation')
-        generate_plan(self.b_l, self.scaled_path, self.center)
+        generate_plan(self.b_l, self.o_l, self.scaled_path, self.center)
         self.screen = pygame.display.set_mode((self.window_size, self.window_size))
 
         self.background = pygame.image.load('bg.jpg').convert()
@@ -121,7 +121,7 @@ class TrajectoryGUI:
 
     def compute_path(self):
         self.scaled_path = trajectory_algorithm(self.w_l, self.o_l, self.b_l)
-        generate_plan(self.b_l, self.scaled_path, self.center)
+        generate_plan(self.b_l, self.o_l, self.scaled_path, self.center)
 
     def draw_resized_circle(self, c, x, y, r):
         pygame.draw.circle(self.screen, c, (x / self.window_size, y / self.window_size),
