@@ -397,7 +397,7 @@ def trajectory_algorithm(w_t, o_t, b_t):
 
             # generate nodes around obstacles coming from the current node
             for obstacle_index in range(len(o_t)):
-                print(len(nodes))
+                # print(len(nodes))
                 ot, io_r = o_t[obstacle_index]
                 o_vec = t_to_v(ot)
                 n_vec = t_to_v(node_e_t)

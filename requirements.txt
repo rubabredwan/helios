@@ -1,0 +1,5 @@
+numpy==1.19.4
+pygame==2.0.0
+Shapely==1.7.1
+utm==0.6.0
+vpython==7.6.1
